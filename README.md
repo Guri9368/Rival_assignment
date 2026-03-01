@@ -4,10 +4,25 @@ A production-ready blog platform built with NestJS, Next.js 15, PostgreSQL, and 
 
 ---
 
-## Live Demo
+1.Login:
+<img width="1895" height="875" alt="image" src="https://github.com/user-attachments/assets/69564219-ca4b-468c-8c47-7d8f877c2e44" />
 
-- **Frontend:** https://your-app.vercel.app _(deploy to Vercel)_
-- **Backend:** https://your-api.railway.app _(deploy to Railway)_
+2. Dashboard
+   <img width="1918" height="849" alt="image" src="https://github.com/user-attachments/assets/c7e5c186-d5c6-4bf8-9cda-1fa5d33ffe2d" />
+3. New Post
+   <img width="1918" height="882" alt="image" src="https://github.com/user-attachments/assets/723110f5-42b3-4c83-b4a2-297a6c64b1d6" />
+4. Feed
+   <img width="1919" height="870" alt="image" src="https://github.com/user-attachments/assets/1ca5be7f-6543-475e-a1f8-920ae7810b00" />
+5. my first-blog
+   <img width="1919" height="834" alt="image" src="https://github.com/user-attachments/assets/45da095e-330f-48b0-b142-39048a418ee9" />
+6.Like and comment added
+<img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/1b28cb54-97dd-4da7-a7f6-11931fa0e6e3" />
+
+
+
+
+
+
 
 ---
 
