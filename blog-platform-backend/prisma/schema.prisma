@@ -1,0 +1,118 @@
+// prisma/schema.prisma
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id               String    @id @default(uuid()) @db.Uuid
+  email            String    @unique @db.VarChar(255)
+  username         String    @unique @db.VarChar(50)
+  passwordHash     String    @map("password_hash") @db.VarChar(255)
+  displayName      String?   @map("display_name") @db.VarChar(100)
+  avatarUrl        String?   @map("avatar_url") @db.VarChar(2048)
+  bio              String?   @db.Text
+  role             Role      @default(USER)
+  isVerified       Boolean   @default(false) @map("is_verified")
+  isActive         Boolean   @default(true) @map("is_active")
+  refreshTokenHash String?   @map("refresh_token_hash") @db.VarChar(255)
+
+  blogs    Blog[]
+  likes    Like[]
+  comments Comment[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([email])
+  @@index([username])
+  @@index([role])
+  @@index([createdAt(sort: Desc)])
+  @@map("users")
+}
+
+model Blog {
+  id           String     @id @default(uuid()) @db.Uuid
+  title        String     @db.VarChar(300)
+  slug         String     @unique @db.VarChar(350)
+  content      String     @db.Text
+  excerpt      String?    @db.VarChar(500)
+  summary      String?    @db.Text
+  coverImage   String?    @map("cover_image") @db.VarChar(2048)
+  status       BlogStatus @default(DRAFT)
+  publishedAt  DateTime?  @map("published_at")
+  likeCount    Int        @default(0) @map("like_count")
+  commentCount Int        @default(0) @map("comment_count")
+  tags         String[]   @default([])
+
+  authorId String @map("author_id") @db.Uuid
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  likes    Like[]
+  comments Comment[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc)])
+  @@index([status, deletedAt])
+  @@map("blogs")
+}
+
+model Like {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blogId    String   @map("blog_id") @db.Uuid
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, blogId])
+  @@index([blogId, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("likes")
+}
+
+model Comment {
+  id        String    @id @default(uuid()) @db.Uuid
+  body      String    @db.VarChar(5000)
+  isEdited  Boolean   @default(false) @map("is_edited")
+  parentId  String?   @map("parent_id") @db.Uuid
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  blogId String @map("blog_id") @db.Uuid
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([blogId, createdAt(sort: Asc)])
+  @@index([blogId, parentId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("comments")
+}
