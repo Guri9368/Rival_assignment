@@ -2,6 +2,9 @@
 
 A production-ready blog platform built with NestJS, Next.js 15, PostgreSQL, and Prisma.
 
+# Video Link - 
+https://drive.google.com/file/d/1Nx00Z6RhhWixjqVQjYie_2PNKAJdx3iT/view?usp=sharing
+
 ---
 
 1.Login:
